@@ -1,4 +1,5 @@
 import {Utils} from './util'
+import workerPath from "file-loader?name=[name].js!./test.worker";
 
 // config
 const size = 420
@@ -38,4 +39,12 @@ function render() {
     }
   }
 
-  render();
+render();
+
+const worker = new Worker(workerPath);
+
+console.log(workerPath, worker);
+worker.addEventListener('message', message => {
+    console.log(message);
+});
+worker.postMessage('this is a test message to the worker');
