@@ -1,10 +1,7 @@
-
 export namespace Utils {
-
-    export function Random(min:number,max:number){
-        return Math.floor( Math.random() * (max + 1 - min) ) + min;
-    }
-
+  export function Random(min: number, max: number) {
+    return Math.floor(Math.random() * (max + 1 - min)) + min
+  }
 
   export function Write2Canvas(
     context: any,
