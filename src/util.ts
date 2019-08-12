@@ -6,18 +6,35 @@ export namespace Utils {
   export function Write2Canvas(
     context: any,
     imageBuf: Array<number>,
-    size: number
+    w: number,
+    h: number
   ) {
-    let canvasImage = context.getImageData(0, 0, size, size)
-    for (let i = 0; i < size; i++) {
-      for (let j = 0; j < size; j++) {
-        let idx = (i * size + j) * 4
-        canvasImage.data[idx + 0] = imageBuf[(i * size + j) * 3 + 0]
-        canvasImage.data[idx + 1] = imageBuf[(i * size + j) * 3 + 1]
-        canvasImage.data[idx + 2] = imageBuf[(i * size + j) * 3 + 2]
-        canvasImage.data[idx + 3] = 255
-      }
+    let canvasImage = context.getImageData(0, 0, w, h)
+    let data = canvasImage.data
+    for (let idx = 0; idx < data.length; idx += 4) {
+      data[idx + 0] = imageBuf[idx + 0]
+      data[idx + 1] = imageBuf[idx + 1]
+      data[idx + 2] = imageBuf[idx + 2]
+      data[idx + 3] = imageBuf[idx + 3]
     }
     context.putImageData(canvasImage, 0, 0)
+  }
+
+  export function GenerateNoise(
+    imageBuffer: Array<number>,
+    startIdx: number,
+    endIdx: number
+  ) {
+    for (let index = startIdx; index < endIdx; index += 4) {
+      let r = Random(0, 255)
+      let g = Random(0, 255)
+      let b = Random(0, 255)
+
+      imageBuffer[index] = r
+      imageBuffer[index + 1] = g
+      imageBuffer[index + 2] = b
+      imageBuffer[index + 3] = 255
+    }
+    return imageBuffer
   }
 }
