@@ -6,6 +6,7 @@ onmessage = function onmessage(message) {
   var start = param.start;
   var end = param.end;
   var em = param.endMAX;
+  var debug = param.debug;
   var total = 0;
 
   for (var i = start; i <= end; i++) {
@@ -17,7 +18,10 @@ onmessage = function onmessage(message) {
     total += i;
   }
 
-  console.log('thread id: ' + id, 'start: ' + start, 'end:' + end, 'total:' + total);
+  if (debug) {
+    console.log('thread id: ' + id, 'start: ' + start, 'end:' + end, 'total:' + total);
+  }
+
   postMessage({
     data: total,
     endVal: end,

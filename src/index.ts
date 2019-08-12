@@ -47,4 +47,4 @@ function render() {
 
 render()
 
-wwSum()
+wwSum(false)

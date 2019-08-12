@@ -4,6 +4,7 @@ onmessage = function(message) {
   let start = param.start
   let end = param.end
   let em = param.endMAX
+  let debug = param.debug
 
   let total = 0
 
@@ -15,11 +16,14 @@ onmessage = function(message) {
     total += i
   }
 
-  console.log(
-    'thread id: ' + id,
-    'start: ' + start,
-    'end:' + end,
-    'total:' + total
-  )
+  if (debug) {
+    console.log(
+      'thread id: ' + id,
+      'start: ' + start,
+      'end:' + end,
+      'total:' + total
+    )
+  }
+
   postMessage({ data: total, endVal: end, endMAX: em, id: id })
 }

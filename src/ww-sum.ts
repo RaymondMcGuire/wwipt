@@ -1,6 +1,9 @@
+import { TimeStatistic } from './time'
 import workerPath from 'file-loader?name=[name].js!./ww-sum.worker'
 
-export function wwSum() {
+export function wwSum(bDebug: boolean = true) {
+  TimeStatistic.start()
+
   // demo for web worker, calculate 1+2+3+...+100
   let endWorkerNum = 0
   let workerNumber = 8
@@ -21,7 +24,7 @@ export function wwSum() {
       em = MAX_NUM
     }
 
-    let parameter = { id: id, start: s, end: e, endMAX: em }
+    let parameter = { id: id, start: s, end: e, endMAX: em, debug: bDebug }
     workers[wn].postMessage(parameter)
     workers[wn].onmessage = function(message) {
       let result = message.data
@@ -35,14 +38,20 @@ export function wwSum() {
           id: id,
           start: endVal + 1,
           end: endVal + processNum,
-          endMAX: em
+          endMAX: em,
+          debug: bDebug
         }
         this.postMessage(parameter)
       } else {
         this.terminate()
         endWorkerNum++
         if (endWorkerNum === workerNumber) {
-          console.log('process finish!', 'Total value is: ' + TOTAL)
+          let time = TimeStatistic.end()
+          console.log(
+            'process finish!',
+            'Total value is: ' + TOTAL,
+            'Time: ' + time + 'ms'
+          )
         }
       }
     }
