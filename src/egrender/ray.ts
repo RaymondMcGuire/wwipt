@@ -23,6 +23,6 @@ export class Ray {
     return this._B
   }
   pointAtParam(t: number) {
-    return this._A.add(this._B.imul(t))
+    return this._A.add(this._B.mul(t))
   }
 }
