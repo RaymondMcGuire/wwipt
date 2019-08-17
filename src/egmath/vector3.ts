@@ -57,4 +57,13 @@ export class Vector3 extends Vector {
     nv.normalize()
     return new Vector3(nv.data()[0], nv.data()[1], nv.data()[2])
   }
+
+  gamma2(): Vector3 {
+    let tv = new Vector(3, this.data())
+    return new Vector3(
+      Math.sqrt(tv.at(0)),
+      Math.sqrt(tv.at(1)),
+      Math.sqrt(tv.at(2))
+    )
+  }
 }

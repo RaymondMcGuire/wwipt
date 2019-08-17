@@ -1,10 +1,14 @@
 const { resolve } = require('path');
+let webpack = require('webpack');
 
 module.exports = {
     mode: process.env.NODE_ENV || "development",
-    entry: "./src/index.ts",
+    entry: {
+        wwipt: "./src/index.ts",
+        worker: "./src/worker/ww-ray-tracing-diffuse.worker.ts"
+    },
     output: {
-        filename: "bundle.js",
+        filename: "[name].js",
         path: resolve(__dirname, 'dist'),
         publicPath: "dist/"
     },
@@ -15,6 +19,14 @@ module.exports = {
         ],
         extensions: [".ts", ".tsx", ".js", ".json"]
     },
+    plugins: [
+        new webpack.BannerPlugin({
+            banner: `var window = self;importScripts("./common.js");`,
+            raw: true,
+            entryOnly: true,
+            test: "dist/worker.js"
+        })
+    ],
     module: {
         rules: [{
                 enforce: 'pre',

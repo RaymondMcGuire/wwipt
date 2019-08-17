@@ -1,5 +1,5 @@
-import { TimeStatistic } from './time'
-import workerPath from 'file-loader?name=[name].js!./ww-sum.worker'
+import { TimeStatistic } from '../time'
+import workerPath from 'file-loader?name=[name].js!../worker/ww-sum.worker'
 
 export function wwSum(bDebug: boolean = true) {
   TimeStatistic.start()

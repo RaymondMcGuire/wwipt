@@ -1,6 +1,10 @@
-import { wwSum } from './ww-sum'
+import { wwSum } from './demo/ww-sum'
 import { GenerateNoiseDemo } from './demo/noise-load'
-import { rayTracingDemo1 } from './demo/ray-tracing1'
+import { rayTracingDiffuse } from './demo/ray-tracing-diffuse'
+import { wwRayTracingDiffuse } from './demo/ww-ray-tracing-diffuse'
+
+// local info
+const maxWorkers = navigator.hardwareConcurrency || 4
 
 // web worker sum demo
 // wwSum(false)
@@ -8,5 +12,7 @@ import { rayTracingDemo1 } from './demo/ray-tracing1'
 // generate noise demo
 // GenerateNoiseDemo()
 
-// ray tracing demo - ray
-rayTracingDemo1()
+// ray tracing diffuse demo
+ rayTracingDiffuse()
+
+// wwRayTracingDiffuse(maxWorkers)

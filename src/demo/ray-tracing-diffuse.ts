@@ -10,9 +10,8 @@ function RandomInUnitSphere() {
   let p = new Vector3(0, 0, 0)
   do {
     p = new Vector3(Math.random(), Math.random(), Math.random())
-    　　.mul(2)
+      .mul(2)
       .sub(new Vector3(1, 1, 1))
-      
   } while (p.lengthSquared() >= 1.0)
   return p
 }
@@ -23,7 +22,7 @@ function Color(r: Ray, world: Hitable): Vector3 {
   let reflectNum = Number.MAX_VALUE
   for (let n = 0; n < Number.MAX_VALUE; n++) {
     let rec = new HitRecord(0, new Vector3(0, 0, 0), new Vector3(0, 0, 0))
-    let bHit = world.hit(r, 0.0, Number.MAX_VALUE, rec)
+    let bHit = world.hit(r, 0.001, Number.MAX_VALUE, rec)
     if (!bHit) {
       reflectNum = n
       break
@@ -42,7 +41,7 @@ function Color(r: Ray, world: Hitable): Vector3 {
   return col
 }
 
-export function rayTracingDemo1() {
+export function rayTracingDiffuse() {
   const nx = 800
   const ny = 400
   const ns = 100
@@ -77,6 +76,7 @@ export function rayTracingDemo1() {
           col.iadd(Color(r, world))
         }
         col.idiv(ns)
+        col = col.gamma2()
 
         let idx = (i + j * nx) * 4
         imageBuffer[idx] = Math.floor(255.99 * col.r())
