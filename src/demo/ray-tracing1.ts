@@ -10,29 +10,41 @@ function RandomInUnitSphere() {
   let p = new Vector3(0, 0, 0)
   do {
     p = new Vector3(Math.random(), Math.random(), Math.random())
+    　　.mul(2)
       .sub(new Vector3(1, 1, 1))
-      .mul(2)
+      
   } while (p.lengthSquared() >= 1.0)
   return p
 }
 
 function Color(r: Ray, world: Hitable): Vector3 {
-  let rec = new HitRecord(0, new Vector3(0, 0, 0), new Vector3(0, 0, 0))
-  if (world.hit(r, 0.0, Number.MAX_VALUE, rec)) {
+  let col = new Vector3(0, 0, 0)
+
+  let reflectNum = Number.MAX_VALUE
+  for (let n = 0; n < Number.MAX_VALUE; n++) {
+    let rec = new HitRecord(0, new Vector3(0, 0, 0), new Vector3(0, 0, 0))
+    let bHit = world.hit(r, 0.0, Number.MAX_VALUE, rec)
+    if (!bHit) {
+      reflectNum = n
+      break
+    }
     let target = rec.p.add(rec.normal).add(RandomInUnitSphere())
-    return Color(new Ray(rec.p, target.sub(rec.p)), world).mul(0.5)
-  } else {
-    let unitDir = r.direction().unitVec3()
-    let t = 0.5 * (unitDir.y() + 1.0)
-    return new Vector3(1.0, 1.0, 1.0)
-      .mul(1.0 - t)
-      .add(new Vector3(0.5, 0.7, 1.0).mul(t))
+    r = new Ray(rec.p, target.sub(rec.p))
   }
+
+  let unitDir = r.direction().unitVec3()
+  let t = 0.5 * (unitDir.y() + 1.0)
+  col = new Vector3(1.0, 1.0, 1.0)
+    .mul(1.0 - t)
+    .add(new Vector3(0.5, 0.7, 1.0).mul(t))
+  col.imul(Math.pow(0.5, reflectNum))
+
+  return col
 }
 
 export function rayTracingDemo1() {
-  const nx = 200
-  const ny = 100
+  const nx = 800
+  const ny = 400
   const ns = 100
 
   let canvas = document.getElementById('canvas') as any
