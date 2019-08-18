@@ -24,6 +24,12 @@ export class Vector3 extends Vector {
     return this.data()[2]
   }
 
+  iset(v3: Vector3) {
+    this.data()[0] = v3.r()
+    this.data()[1] = v3.g()
+    this.data()[2] = v3.b()
+  }
+
   set(v3: Vector3) {
     return super.set(new Vector(3, v3.data()))
   }

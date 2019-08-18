@@ -1,15 +1,18 @@
 import { Hitable, HitRecord } from './hitable'
 import { Vector3 } from '../egmath/vector3'
 import { Ray } from './ray'
+import { Material } from './material'
 
 export class Sphere extends Hitable {
   center: Vector3
   radius: number
+  material: Material
 
-  constructor(cen: Vector3, r: number) {
+  constructor(cen: Vector3, r: number, mat: Material) {
     super()
     this.center = cen
     this.radius = r
+    this.material = mat
   }
 
   hit(r: Ray, tMin: number, tMax: number, rec: HitRecord): boolean {
@@ -24,6 +27,7 @@ export class Sphere extends Hitable {
         rec.t = tmp
         rec.p = r.pointAtParam(rec.t)
         rec.normal = rec.p.sub(this.center).div(this.radius)
+        rec.material = this.material
         return true
       }
 
@@ -32,6 +36,7 @@ export class Sphere extends Hitable {
         rec.t = tmp
         rec.p = r.pointAtParam(rec.t)
         rec.normal = rec.p.sub(this.center).div(this.radius)
+        rec.material = this.material
         return true
       }
     }

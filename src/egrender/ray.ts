@@ -8,8 +8,8 @@
 import { Vector3 } from '../egmath/vector3'
 
 export class Ray {
-  private _A: Vector3
-  private _B: Vector3
+  public _A: Vector3
+  public _B: Vector3
 
   constructor(a: Vector3, b: Vector3) {
     this._A = a

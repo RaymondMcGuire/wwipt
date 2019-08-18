@@ -5,7 +5,7 @@ module.exports = {
     mode: process.env.NODE_ENV || "development",
     entry: {
         wwipt: "./src/index.ts",
-        ww_ray_tracing_diffuse_worker: "./src/worker/ww-ray-tracing-diffuse.worker.ts"
+        ww_ray_tracing_lambertian_worker: "./src/worker/ww-ray-tracing-lambertian.worker.ts"
     },
     output: {
         filename: "[name].js",
@@ -19,14 +19,6 @@ module.exports = {
         ],
         extensions: [".ts", ".tsx", ".js", ".json"]
     },
-    // plugins: [
-    //     new webpack.BannerPlugin({
-    //         banner: `var window = self;importScripts("./common.js");`,
-    //         raw: true,
-    //         entryOnly: true,
-    //         test: "dist/worker.js"
-    //     })
-    // ],
     module: {
         rules: [{
                 enforce: 'pre',

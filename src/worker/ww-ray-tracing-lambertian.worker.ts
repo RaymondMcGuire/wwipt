@@ -4,32 +4,36 @@ import { Hitable, HitRecord } from '../egrender/hitable'
 import { Camera } from '../egrender/camera'
 import { Sphere } from '../egrender/sphere'
 import { HitableList } from '../egrender/hitable-list'
+import { Lambertian } from '../egrender/lambertian'
 
 const ctx: Worker = self as any
 
-function RandomInUnitSphere() {
-  let p = new Vector3(0, 0, 0)
-  do {
-    p = new Vector3(Math.random(), Math.random(), Math.random())
-      .mul(2)
-      .sub(new Vector3(1, 1, 1))
-  } while (p.lengthSquared() >= 1.0)
-  return p
-}
-
-function Color(r: Ray, world: Hitable): Vector3 {
+function Color(r: Ray, world: Hitable, depth: number): Vector3 {
   let col = new Vector3(0, 0, 0)
 
-  let reflectNum = Number.MAX_VALUE
+  let attenuationSum = new Vector3(1, 1, 1)
   for (let n = 0; n < Number.MAX_VALUE; n++) {
-    let rec = new HitRecord(0, new Vector3(0, 0, 0), new Vector3(0, 0, 0))
+    let rec = new HitRecord(
+      0,
+      new Vector3(0, 0, 0),
+      new Vector3(0, 0, 0),
+      new Lambertian(new Vector3(0, 0, 0))
+    )
     let bHit = world.hit(r, 0.001, Number.MAX_VALUE, rec)
     if (!bHit) {
-      reflectNum = n
       break
     }
-    let target = rec.p.add(rec.normal).add(RandomInUnitSphere())
-    r = new Ray(rec.p, target.sub(rec.p))
+    let bScatter = rec.material.scatter(r, rec)
+    let scattered = rec.material.scattered
+    let attenuation = rec.material.attenuation
+    if (bScatter && depth < 50) {
+      depth++
+      r = scattered
+      attenuationSum.imul(attenuation)
+    } else {
+      attenuationSum = new Vector3(0, 0, 0)
+      break
+    }
   }
 
   let unitDir = r.direction().unitVec3()
@@ -37,7 +41,7 @@ function Color(r: Ray, world: Hitable): Vector3 {
   col = new Vector3(1.0, 1.0, 1.0)
     .mul(1.0 - t)
     .add(new Vector3(0.5, 0.7, 1.0).mul(t))
-  col.imul(Math.pow(0.5, reflectNum))
+  col.imul(attenuationSum)
 
   return col
 }
@@ -61,8 +65,17 @@ ctx.onmessage = function(message) {
   // object
   let cam = new Camera()
   let list = new Array<Hitable>(2)
-  list[0] = new Sphere(new Vector3(0, 0, -1), 0.5)
-  list[1] = new Sphere(new Vector3(0, -100.5, -1), 100)
+  list[0] = new Sphere(
+    new Vector3(0, 0, -1),
+    0.5,
+    new Lambertian(new Vector3(0.8, 0.3, 0.3))
+  )
+  list[1] = new Sphere(
+    new Vector3(0, -100.5, -1),
+    100,
+    new Lambertian(new Vector3(0.8, 0.8, 0.0))
+  )
+
   let world = new HitableList(list, 2)
 
   let colArray = new Array<Number>()
@@ -74,7 +87,7 @@ ctx.onmessage = function(message) {
         let u = (i + Math.random()) / nx
         let v = (ny - 1 - (j + Math.random())) / ny
         let r = cam.getRay(u, v)
-        col.iadd(Color(r, world))
+        col.iadd(Color(r, world, 0))
       }
       col.idiv(ns)
       col = col.gamma2()

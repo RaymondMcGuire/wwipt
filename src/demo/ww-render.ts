@@ -1,7 +1,7 @@
 import { TimeStatistic } from '../time'
 import { Utils } from '../util'
 
-export function wwRayTracingDiffuse(workerPath: string, maxWorkers: number) {
+export function wwRender(workerPath: string, maxWorkers: number) {
   let endWorkerNum = 0
   let workers: any = []
   let processNum = 10
@@ -81,8 +81,8 @@ export function wwRayTracingDiffuse(workerPath: string, maxWorkers: number) {
         endWorkerNum++
         if (endWorkerNum === maxWorkers) {
           // process finished
-          let time = TimeStatistic.end()
-          console.log('process finished!', 'Time: ' + time + 'ms')
+          let time = TimeStatistic.end() / 1000
+          console.log('process finished!', 'Time: ' + time + 'sec')
         }
       }
     }

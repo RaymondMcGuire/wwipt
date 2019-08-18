@@ -1,6 +1,7 @@
 import { Hitable, HitRecord } from './hitable'
 import { Vector3 } from '../egmath/vector3'
 import { Ray } from './ray'
+import { Lambertian } from './lambertian'
 
 export class HitableList extends Hitable {
   list: Array<Hitable>
@@ -12,7 +13,12 @@ export class HitableList extends Hitable {
   }
 
   hit(r: Ray, tMin: number, tMax: number, rec: HitRecord): boolean {
-    let tmpRec = new HitRecord(0, new Vector3(0, 0, 0), new Vector3(0, 0, 0))
+    let tmpRec = new HitRecord(
+      0,
+      new Vector3(0, 0, 0),
+      new Vector3(0, 0, 0),
+      new Lambertian(new Vector3(0, 0, 0))
+    )
     let hitAnything = false
     let closestSoFar = tMax
     for (let i = 0; i < this.listSize; i++) {
@@ -22,6 +28,7 @@ export class HitableList extends Hitable {
         rec.t = tmpRec.t
         rec.p = tmpRec.p
         rec.normal = tmpRec.normal
+        rec.material = tmpRec.material
       }
     }
     return hitAnything

@@ -1,4 +1,16 @@
+import { Vector3 } from './egmath/vector3'
+
 export namespace Utils {
+  export function RandomInUnitSphere() {
+    let p = new Vector3(0, 0, 0)
+    do {
+      p = new Vector3(Math.random(), Math.random(), Math.random())
+        .mul(2)
+        .sub(new Vector3(1, 1, 1))
+    } while (p.lengthSquared() >= 1.0)
+    return p
+  }
+
   export function Random(min: number, max: number) {
     return Math.floor(Math.random() * (max + 1 - min)) + min
   }
