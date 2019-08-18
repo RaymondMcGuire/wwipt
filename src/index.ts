@@ -13,6 +13,6 @@ const maxWorkers = navigator.hardwareConcurrency || 4
 // GenerateNoiseDemo()
 
 // ray tracing diffuse demo
- rayTracingDiffuse()
+// rayTracingDiffuse()
 
-// wwRayTracingDiffuse(maxWorkers)
+wwRayTracingDiffuse('dist/ww_ray_tracing_diffuse_worker.js', maxWorkers)
