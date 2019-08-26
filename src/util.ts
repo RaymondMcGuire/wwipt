@@ -11,6 +11,38 @@ export namespace Utils {
     return p
   }
 
+  export function reflect(v: Vector3, n: Vector3) {
+    return v.sub(n.mul(2 * v.dot(n)))
+  }
+
+  export function schlick(cosine: number, refIdx: number) {
+    let r0 = (1 - refIdx) / (1 + refIdx)
+    r0 = r0 * r0
+    return r0 + (1 - r0) * Math.pow(1 - cosine, 5)
+  }
+
+  export function refract(
+    v: Vector3,
+    n: Vector3,
+    niOverNt: number,
+    refracted: Vector3
+  ) {
+    let uv = v.unitVec3()
+    let dt = uv.dot(n)
+    let discriminant = 1.0 - niOverNt * niOverNt * (1 - dt * dt)
+    if (discriminant > 0) {
+      refracted.set(
+        uv
+          .sub(n.mul(dt))
+          .mul(niOverNt)
+          .sub(n.mul(Math.sqrt(discriminant)))
+      )
+      return true
+    } else {
+      return false
+    }
+  }
+
   export function Random(min: number, max: number) {
     return Math.floor(Math.random() * (max + 1 - min)) + min
   }
