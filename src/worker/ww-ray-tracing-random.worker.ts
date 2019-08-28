@@ -10,6 +10,75 @@ import { Dielectric } from '../egrender/dielectric'
 
 const ctx: Worker = self as any
 
+function RandomScene(num: number): HitableList {
+  let hitList = new Array<Hitable>(num + 1)
+  hitList[0] = new Sphere(
+    new Vector3(0, -1000, 0),
+    1000,
+    new Lambertian(new Vector3(0.5, 0.5, 0.5))
+  )
+  let i = 1
+  for (let _a = -11; _a < 11; _a++) {
+    for (let _b = -11; _b < 11; _b++) {
+      let chooseMat = Math.random()
+      let center = new Vector3(
+        _a + 0.9 * Math.random(),
+        0.2,
+        _b + 0.9 * Math.random()
+      )
+      if (center.sub(new Vector3(4, 0.2, 0)).length() > 0.9) {
+        if (chooseMat < 0.8) {
+          // diffuse
+          hitList[i++] = new Sphere(
+            center,
+            0.2,
+            new Lambertian(
+              new Vector3(
+                Math.random() * Math.random(),
+                Math.random() * Math.random(),
+                Math.random() * Math.random()
+              )
+            )
+          )
+        } else if (chooseMat < 0.95) {
+          // metal
+          hitList[i++] = new Sphere(
+            center,
+            0.2,
+            new Metal(
+              new Vector3(
+                0.5 * (1 + Math.random()),
+                0.5 * (1 + Math.random()),
+                0.5 * (1 + Math.random())
+              ),
+              0.5 * Math.random()
+            )
+          )
+        } else {
+          // glass
+          hitList[i++] = new Sphere(center, 0.2, new Dielectric(1.5))
+        }
+      }
+    }
+  }
+
+  hitList[i++] = new Sphere(new Vector3(0, 1, 0), 1.0, new Dielectric(1.5))
+  hitList[i++] = new Sphere(
+    new Vector3(-4, 1, 0),
+    1.0,
+    new Lambertian(new Vector3(0.4, 0.2, 0.1))
+  )
+  hitList[i++] = new Sphere(
+    new Vector3(4, 1, 0),
+    1.0,
+    new Metal(new Vector3(0.7, 0.6, 0.5), 0.0)
+  )
+
+  return new HitableList(hitList, i)
+}
+
+let scene = RandomScene(100)
+
 function Color(r: Ray, world: Hitable, depth: number): Vector3 {
   let col = new Vector3(0, 0, 0)
 
@@ -64,35 +133,15 @@ ctx.onmessage = function(message) {
     end = endMax
   }
 
-  // object
-  let lookFrom = new Vector3(3, 3, 2)
-  let lookAt = new Vector3(0, 0, -1)
+  // camera
+  let lookFrom = new Vector3(13, 2, 3)
+  let lookAt = new Vector3(0, 0, 0)
   let vup = new Vector3(0, 1, 0)
   let vfov = 20
   let aspect = nx / ny
-  let aperture = 2.0
-  let focusDist = lookFrom.sub(lookAt).length()
+  let aperture = 0.1
+  let focusDist = 10.0
   let cam = new Camera(lookFrom, lookAt, vup, vfov, aspect, aperture, focusDist)
-  let list = new Array<Hitable>(5)
-  list[0] = new Sphere(
-    new Vector3(0, 0, -1),
-    0.5,
-    new Lambertian(new Vector3(0.1, 0.2, 0.5))
-  )
-  list[1] = new Sphere(
-    new Vector3(0, -100.5, -1),
-    100,
-    new Lambertian(new Vector3(0.8, 0.8, 0.0))
-  )
-  list[2] = new Sphere(
-    new Vector3(1, 0, -1),
-    0.5,
-    new Metal(new Vector3(0.8, 0.6, 0.2), 0.3)
-  )
-  list[3] = new Sphere(new Vector3(-1, 0, -1), 0.5, new Dielectric(1.5))
-  list[4] = new Sphere(new Vector3(-1, 0, -1), -0.45, new Dielectric(1.5))
-
-  let world = new HitableList(list, 5)
 
   let colArray = new Array<Number>()
 
@@ -103,7 +152,7 @@ ctx.onmessage = function(message) {
         let u = (i + Math.random()) / nx
         let v = (ny - 1 - (j + Math.random())) / ny
         let r = cam.getRay(u, v)
-        col.iadd(Color(r, world, 0))
+        col.iadd(Color(r, scene, 0))
       }
       col.idiv(ns)
       col = col.gamma2()

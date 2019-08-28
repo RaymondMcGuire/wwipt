@@ -1,13 +1,13 @@
 import { TimeStatistic } from '../time'
 import { Utils } from '../util'
 
-export function wwRender(workerPath: string, maxWorkers: number) {
+export function wwRenderSceneFix(workerPath: string, maxWorkers: number) {
   let endWorkerNum = 0
   let workers: any = []
   let processNum = 10
 
-  const nx = 800
-  const ny = 400
+  const nx = 400
+  const ny = 200
   const ns = 100
 
   let canvas = document.getElementById('canvas') as any

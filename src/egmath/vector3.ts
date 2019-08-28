@@ -58,6 +58,15 @@ export class Vector3 extends Vector {
     return super.dot(new Vector(3, v3.data()))
   }
 
+  cross(v3: Vector3) {
+    let nv = new Vector(3, this.data())
+    return new Vector3(
+      nv.data()[1] * v3.data()[2] - nv.data()[2] * v3.data()[1],
+      nv.data()[2] * v3.data()[0] - nv.data()[0] * v3.data()[2],
+      nv.data()[0] * v3.data()[1] - nv.data()[1] * v3.data()[0]
+    )
+  }
+
   unitVec3(): Vector3 {
     let nv = new Vector(3, this.data())
     nv.normalize()

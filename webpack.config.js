@@ -7,7 +7,8 @@ module.exports = {
         wwipt: "./src/index.ts",
         ww_ray_tracing_lambertian_worker: "./src/worker/ww-ray-tracing-lambertian.worker.ts",
         ww_ray_tracing_metal_worker: "./src/worker/ww-ray-tracing-metal.worker.ts",
-        ww_ray_tracing_dielectric_worker: "./src/worker/ww-ray-tracing-dielectric.worker.ts"
+        ww_ray_tracing_dielectric_worker: "./src/worker/ww-ray-tracing-dielectric.worker.ts",
+        ww_ray_tracing_random_worker: "./src/worker/ww-ray-tracing-random.worker.ts"
     },
     output: {
         filename: "[name].js",

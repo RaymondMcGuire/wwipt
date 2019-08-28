@@ -64,7 +64,14 @@ ctx.onmessage = function(message) {
   }
 
   // object
-  let cam = new Camera()
+  let lookFrom = new Vector3(3, 3, 2)
+  let lookAt = new Vector3(0, 0, -1)
+  let vup = new Vector3(0, 1, 0)
+  let vfov = 20
+  let aspect = nx / ny
+  let aperture = 2.0
+  let focusDist = lookFrom.sub(lookAt).length()
+  let cam = new Camera(lookFrom, lookAt, vup, vfov, aspect, aperture, focusDist)
   let list = new Array<Hitable>(4)
   list[0] = new Sphere(
     new Vector3(0, 0, -1),

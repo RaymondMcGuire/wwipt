@@ -11,6 +11,16 @@ export namespace Utils {
     return p
   }
 
+  export function RandomInUnitDisk() {
+    let p = new Vector3(0, 0, 0)
+    do {
+      p = new Vector3(Math.random(), Math.random(), Math.random())
+        .mul(2)
+        .sub(new Vector3(1, 1, 0))
+    } while (p.lengthSquared() >= 1.0)
+    return p
+  }
+
   export function reflect(v: Vector3, n: Vector3) {
     return v.sub(n.mul(2 * v.dot(n)))
   }

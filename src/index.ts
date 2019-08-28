@@ -1,6 +1,6 @@
 import { wwSum } from './demo/ww-sum'
 import { GenerateNoiseDemo } from './demo/noise-load'
-import { wwRender } from './demo/ww-render'
+import { wwRenderSceneFix } from './demo/ww-render-fix'
 
 // local info
 const maxWorkers = navigator.hardwareConcurrency || 4
@@ -14,4 +14,5 @@ const maxWorkers = navigator.hardwareConcurrency || 4
 // ray tracing diffuse demo
 // rayTracingDiffuse()
 
-wwRender('dist/ww_ray_tracing_dielectric_worker.js', maxWorkers)
+// render fix scene
+wwRenderSceneFix('dist/ww_ray_tracing_random_worker.js', maxWorkers)
