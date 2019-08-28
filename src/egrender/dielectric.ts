@@ -8,9 +8,11 @@ export class Dielectric extends Material {
   scattered: Ray
   attenuation: Vector3
   refIdx: number
+  name: string
 
   constructor(ri: number) {
     super()
+    this.name = 'Dielectric'
     this.refIdx = ri
     this.scattered = new Ray(new Vector3(0, 0, 0), new Vector3(0, 0, 0))
     this.attenuation = new Vector3(0, 0, 0)

@@ -17,5 +17,6 @@ export class HitRecord {
 }
 
 export abstract class Hitable {
+  abstract name: string
   abstract hit(r: Ray, tMin: number, tMax: number, rec: HitRecord): boolean
 }

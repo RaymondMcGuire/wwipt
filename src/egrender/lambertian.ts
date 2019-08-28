@@ -8,9 +8,11 @@ export class Lambertian extends Material {
   albedo: Vector3
   scattered: Ray
   attenuation: Vector3
+  name: string
 
   constructor(a: Vector3) {
     super()
+    this.name = 'Lambertian'
     this.albedo = a
     this.scattered = new Ray(new Vector3(0, 0, 0), new Vector3(0, 0, 0))
     this.attenuation = new Vector3(0, 0, 0)

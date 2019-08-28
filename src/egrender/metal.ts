@@ -9,9 +9,11 @@ export class Metal extends Material {
   scattered: Ray
   attenuation: Vector3
   fuzz: number
+  name: string
 
   constructor(a: Vector3, f: number) {
     super()
+    this.name = 'Metal'
     this.albedo = a
     this.scattered = new Ray(new Vector3(0, 0, 0), new Vector3(0, 0, 0))
     this.attenuation = new Vector3(0, 0, 0)

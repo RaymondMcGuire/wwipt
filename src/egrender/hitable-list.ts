@@ -6,8 +6,10 @@ import { Lambertian } from './lambertian'
 export class HitableList extends Hitable {
   list: Array<Hitable>
   listSize: number
+  name: string
   constructor(l: Array<Hitable>, n: number) {
     super()
+    this.name = 'HitableList'
     this.list = l
     this.listSize = n
   }

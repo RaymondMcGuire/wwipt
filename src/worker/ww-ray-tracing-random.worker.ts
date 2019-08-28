@@ -7,77 +7,9 @@ import { HitableList } from '../egrender/hitable-list'
 import { Lambertian } from '../egrender/lambertian'
 import { Metal } from '../egrender/metal'
 import { Dielectric } from '../egrender/dielectric'
+import { Material } from '../egrender/material'
 
 const ctx: Worker = self as any
-
-function RandomScene(num: number): HitableList {
-  let hitList = new Array<Hitable>(num + 1)
-  hitList[0] = new Sphere(
-    new Vector3(0, -1000, 0),
-    1000,
-    new Lambertian(new Vector3(0.5, 0.5, 0.5))
-  )
-  let i = 1
-  for (let _a = -11; _a < 11; _a++) {
-    for (let _b = -11; _b < 11; _b++) {
-      let chooseMat = Math.random()
-      let center = new Vector3(
-        _a + 0.9 * Math.random(),
-        0.2,
-        _b + 0.9 * Math.random()
-      )
-      if (center.sub(new Vector3(4, 0.2, 0)).length() > 0.9) {
-        if (chooseMat < 0.8) {
-          // diffuse
-          hitList[i++] = new Sphere(
-            center,
-            0.2,
-            new Lambertian(
-              new Vector3(
-                Math.random() * Math.random(),
-                Math.random() * Math.random(),
-                Math.random() * Math.random()
-              )
-            )
-          )
-        } else if (chooseMat < 0.95) {
-          // metal
-          hitList[i++] = new Sphere(
-            center,
-            0.2,
-            new Metal(
-              new Vector3(
-                0.5 * (1 + Math.random()),
-                0.5 * (1 + Math.random()),
-                0.5 * (1 + Math.random())
-              ),
-              0.5 * Math.random()
-            )
-          )
-        } else {
-          // glass
-          hitList[i++] = new Sphere(center, 0.2, new Dielectric(1.5))
-        }
-      }
-    }
-  }
-
-  hitList[i++] = new Sphere(new Vector3(0, 1, 0), 1.0, new Dielectric(1.5))
-  hitList[i++] = new Sphere(
-    new Vector3(-4, 1, 0),
-    1.0,
-    new Lambertian(new Vector3(0.4, 0.2, 0.1))
-  )
-  hitList[i++] = new Sphere(
-    new Vector3(4, 1, 0),
-    1.0,
-    new Metal(new Vector3(0.7, 0.6, 0.5), 0.0)
-  )
-
-  return new HitableList(hitList, i)
-}
-
-let scene = RandomScene(100)
 
 function Color(r: Ray, world: Hitable, depth: number): Vector3 {
   let col = new Vector3(0, 0, 0)
@@ -128,10 +60,75 @@ ctx.onmessage = function(message) {
   let ny = param.height
   let ns = param.samplingNum
 
+  let _scene = param.scene
+
   // process end
   if (end > endMax) {
     end = endMax
   }
+
+  // init scene
+  let objList = _scene.list
+  let listSize = _scene.listSize
+  let list = new Array<Hitable>(listSize)
+  for (let index = 0; index < list.length; index++) {
+    const hitable = objList[index] as Hitable
+    let className = hitable.name
+    switch (className) {
+      case 'Sphere':
+        let _s = hitable as Sphere
+
+        // material
+        let m: Material
+        switch (_s.material.name) {
+          case 'Lambertian':
+            let _m = _s.material as Lambertian
+            m = new Lambertian(
+              new Vector3(
+                _m.albedo._elements[0],
+                _m.albedo._elements[1],
+                _m.albedo._elements[2]
+              )
+            )
+            break
+          case 'Metal':
+            let _m1 = _s.material as Metal
+            m = new Metal(
+              new Vector3(
+                _m1.albedo._elements[0],
+                _m1.albedo._elements[1],
+                _m1.albedo._elements[2]
+              ),
+              _m1.fuzz
+            )
+            break
+          case 'Dielectric':
+            let _m2 = _s.material as Dielectric
+            m = new Dielectric(_m2.refIdx)
+            break
+
+          default:
+            let _m3 = _s.material as Lambertian
+            m = new Lambertian(
+              new Vector3(
+                _m3.albedo._elements[0],
+                _m3.albedo._elements[1],
+                _m3.albedo._elements[2]
+              )
+            )
+            break
+        }
+
+        let _center = _s.center._elements
+        let center: Vector3
+        center = new Vector3(_center[0], _center[1], _center[2])
+        let s = new Sphere(center, _s.radius, m)
+        list[index] = s
+        break
+    }
+  }
+
+  let scene = new HitableList(list, listSize)
 
   // camera
   let lookFrom = new Vector3(13, 2, 3)

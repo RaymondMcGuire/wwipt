@@ -7,9 +7,11 @@ export class Sphere extends Hitable {
   center: Vector3
   radius: number
   material: Material
+  name: string
 
   constructor(cen: Vector3, r: number, mat: Material) {
     super()
+    this.name = 'Sphere'
     this.center = cen
     this.radius = r
     this.material = mat
